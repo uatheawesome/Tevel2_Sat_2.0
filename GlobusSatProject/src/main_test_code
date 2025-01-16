@@ -1,0 +1,143 @@
+#include <freertos/FreeRTOS.h>
+#include <freertos/semphr.h>
+#include <freertos/task.h>
+
+#include <hal/Timing/WatchDogTimer.h>
+#include <hal/boolean.h>
+#include <hal/Utility/util.h>
+#include <hal/Drivers/I2C.h>
+#include <hal/Drivers/SPI.h>
+#include <hal/Timing/Time.h>
+
+#include <at91/utility/trace.h>
+#include <at91/peripherals/cp15/cp15.h>
+#include <at91/utility/exithandler.h>
+#include <at91/commons.h>
+
+#include <hcc/api_fat.h>
+
+#include "GlobalStandards.h"
+#include "SubSystemModules/PowerManagment/EPS.h"
+#include "SubSystemModules/Communication/TRXVU.h"
+#include "SubSystemModules/Housekepping/TelemetryCollector.h"
+#include "SubSystemModules/Maintenance/Maintenance.h"
+#include "InitSystem.h"
+#include "main.h"
+
+
+void listFiels(){
+
+	write2File("test123",tlm_solar);
+
+	F_FIND find;
+	if (!f_findfirst("*.*",&find))
+	{
+		do
+		{
+			printf("filename:%s",find.filename);
+
+			 if (find.attr&F_ATTR_DIR)
+			 {
+				 printf ("directory\n");
+			 }
+			 else
+			 {
+				 printf (" size %d\n",find.filesize);
+			 }
+		} while (!f_findnext(&find));
+	}
+	printf("all file names printed");
+
+}
+
+void changeFirstActivation(Boolean value){
+
+	Boolean flag;
+	FRAM_read((unsigned char*) &flag, FIRST_ACTIVATION_FLAG_ADDR,
+	FIRST_ACTIVATION_FLAG_SIZE);
+	printf("first activation value before:%d \n",flag);
+
+	FRAM_write((unsigned char*) &value,
+	FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE);
+
+	FRAM_read((unsigned char*) &flag, FIRST_ACTIVATION_FLAG_ADDR,
+	FIRST_ACTIVATION_FLAG_SIZE);
+	printf("first activation value after:%d \n",flag);
+
+}
+
+void test(){
+
+
+	time_unix tlm_save_period = DEFAULT_EPS_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*) &tlm_save_period, EPS_SAVE_TLM_PERIOD_ADDR,
+			sizeof(tlm_save_period));
+
+	tlm_save_period = DEFAULT_TRXVU_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*) &tlm_save_period, TRXVU_SAVE_TLM_PERIOD_ADDR,
+			sizeof(tlm_save_period));
+
+	tlm_save_period = DEFAULT_ANT_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*) &tlm_save_period, ANT_SAVE_TLM_PERIOD_ADDR,
+			sizeof(tlm_save_period));
+
+	tlm_save_period = DEFAULT_SOLAR_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*) &tlm_save_period, SOLAR_SAVE_TLM_PERIOD_ADDR,
+			sizeof(tlm_save_period));
+
+	tlm_save_period = DEFAULT_WOD_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*) &tlm_save_period, WOD_SAVE_TLM_PERIOD_ADDR,
+			sizeof(tlm_save_period));
+
+	time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
+	time_unix tlm_last_save_time[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS]= {0};
+
+	time_unix value;
+	FRAM_read((unsigned char*) &tlm_save_periods[tlm_eps], EPS_SAVE_TLM_PERIOD_ADDR, sizeof(time_unix));
+	printf("test value:%d \n",value);
+
+	FRAM_read((unsigned char*) &tlm_save_periods[tlm_tx], TRXVU_SAVE_TLM_PERIOD_ADDR, sizeof(time_unix));
+	printf("test value:%d \n",value);
+
+	FRAM_read((unsigned char*) &tlm_save_periods[tlm_antenna], ANT_SAVE_TLM_PERIOD_ADDR, sizeof(time_unix));
+	printf("test value:%d \n",value);
+
+	FRAM_read((unsigned char*) &tlm_save_periods[tlm_solar], SOLAR_SAVE_TLM_PERIOD_ADDR, sizeof(time_unix));
+	printf("test value:%d \n",value);
+
+	FRAM_read((unsigned char*) &tlm_save_periods[tlm_wod], WOD_SAVE_TLM_PERIOD_ADDR, sizeof(time_unix));
+	printf("test value:%d \n",value);
+
+
+	printf("test value:%d \n",value);
+
+}
+
+
+void taskMain()
+{
+	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
+
+	InitSubsystems();
+	//listFiels();
+	//changeFirstActivation(TRUE);
+	test();
+}
+
+// main operation function. will be called upon software boot.
+int main()
+{
+	xTaskHandle taskMainHandle;
+	printf("***** starting... ****\n");
+		TRACE_CONFIGURE_ISP(DBGU_STANDARD, 2000000, BOARD_MCK);
+		// Enable the Instruction cache of the ARM9 core. Keep the MMU and Data Cache disabled.
+		CP15_Enable_I_Cache();
+
+		// The actual watchdog is already started, this only initializes the watchdog-kick interface.
+		WDT_start();
+
+		// create the main operation task of the satellite
+		xTaskGenericCreate(taskMain, (const signed char*) "taskMain", 4096, NULL,
+				configMAX_PRIORITIES - 2, &taskMainHandle, NULL, NULL);
+		vTaskStartScheduler();
+}

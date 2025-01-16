@@ -1,0 +1,671 @@
+{
+  "types": [
+    {
+      "id": "0",
+      "name": "TRXVU",
+      "desc": "All TRXVU function calls",
+      "subtypes": [
+        {
+          "id": "166",
+          "name": "Set Transponder",
+          "desc": "Set Transponder mode",
+          "inParams": [
+            {
+              "name": "mode",
+              "desc": "Transponder mode",
+              "type": "char",
+              "values": [
+                {
+                  "id": "01",
+                  "name": "nominal"
+                },
+                {
+                  "id": "02",
+                  "name": "transponder"
+                }
+              ]
+            },
+            {
+              "name": "duration",
+              "desc": "number of seconds to run the transponder (valid only when mdoe is transponder)",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "165",
+          "name": "Set Transponder RSSI",
+          "desc": "Set the minimum RSSI for the transponder to take action",
+          "inParams": [
+            {
+              "name": "RSSI",
+              "desc": "RSSI value (0-4095)",
+              "type": "short"
+            }
+          ]
+        },
+        {
+          "id": "194",
+          "name": "Ping",
+          "desc": "Send ping call to satellite (a.k.a dummy function)",
+          "inParams": []
+        },
+        {
+          "id": "17",
+          "name": "Mute",
+          "desc": "mute the TRXVU",
+          "inParams": [
+            {
+              "name": "duration",
+              "desc": "number of seconds to mute the TRXVU",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "136",
+          "name": "Unmute",
+          "desc": "unmute the TRXVU",
+          "inParams": []
+        },
+        {
+          "id": "35",
+          "name": "Get beacon interval",
+          "desc": "get the beacon interval time in seconds",
+          "inParams": []
+        },
+        {
+          "id": "36",
+          "name": "Set beacon interval",
+          "desc": "set the beacon interval time in seconds",
+          "inParams": [
+            {
+              "name": "seconds",
+              "desc": "number of seconds for beacon interval ",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "37",
+          "name": "Transmit beacon",
+          "desc": "Transmit beacon ignoring all tx allow checks",
+          "inParams": []
+        },
+        {
+          "id": "21",
+          "name": "Set baud rate",
+          "desc": "set the bitrate of the trxvu",
+          "inParams": [
+            {
+              "name": "bitrate",
+              "desc": "the bitrate we want to set in the trxvu (1200 - 00 | 2400 - 01 | 4800 - 02 | 9600 - 03)",
+              "type": "char",
+              "values": [
+                {
+                  "id": "00",
+                  "name": "1200"
+                },
+                {
+                  "id": "01",
+                  "name": "2400"
+                },
+                {
+                  "id": "02",
+                  "name": "4800"
+                },
+                {
+                  "id": "03",
+                  "name": "9600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "178",
+          "name": "ANT get arm status",
+          "desc": "get the status of one side in the antenna",
+          "inParams": [
+            {
+              "name": "ant side",
+              "desc": "what side we want to know the status (side A - 00 | side B - 01) ",
+              "type": "char",
+              "values": [
+                {
+                  "id": "00",
+                  "name": "Side A"
+                },
+                {
+                  "id": "01",
+                  "name": "Side B"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "176",
+          "name": "ANT set arm status",
+          "desc": "set the status of one side in the antenna",
+          "inParams": [
+            {
+              "name": "ant side",
+              "desc": "what side we want to change the status (side A - 00 | side B - 01) ",
+              "type": "char",
+              "values": [
+                {
+                  "id": "00",
+                  "name": "Side A"
+                },
+                {
+                  "id": "01",
+                  "name": "Side B"
+                }
+              ]
+            },
+            {
+              "name": "status",
+              "desc": "what status we want the antenna side to be (disarm = 172 | arm = 173) ",
+              "type": "char",
+              "values": [
+                {
+                  "id": "172",
+                  "name": "disarm"
+                },
+                {
+                  "id": "173",
+                  "name": "arm"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "179",
+          "name": "ANT get UPTIME",
+          "desc": "get the UPTIME of one side in the antenna",
+          "inParams": [
+            {
+              "name": "ant side",
+              "desc": "what side we want to know the UPTIME (side A - 00 | side B - 01) ",
+              "type": "char",
+              "values": [
+                {
+                  "id": "00",
+                  "name": "Side A"
+                },
+                {
+                  "id": "01",
+                  "name": "Side B"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "183",
+          "name": "ANT cancel deploy",
+          "desc": "cancel the deployment of one side in the antenna",
+          "inParams": [
+            {
+              "name": "ant side",
+              "desc": "what side we want to cancel the deployment (side A - 00 | side B - 01) ",
+              "type": "char",
+              "values": [
+                {
+                  "id": "00",
+                  "name": "Side A"
+                },
+                {
+                  "id": "01",
+                  "name": "Side B"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "135",
+          "name": "Set idel state",
+          "desc": "set the TRXVU idel state",
+          "inParams": [
+            {
+              "name": "state",
+              "desc": "00 (off) / 01 (on)",
+              "type": "char",
+              "values": [
+                {
+                  "id": "00",
+                  "name": "Off"
+                },
+                {
+                  "id": "01",
+                  "name": "On"
+                }
+              ]
+            },
+            {
+              "name": "duration",
+              "desc": "idle duration time (max 10 minutes) apply only for state ON",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "192",
+          "name": "Ant Stop Redeploy",
+          "desc": "Stop the every 30 min ant deploy in the maintiance",
+          "inParams": []
+        },
+        {
+          "id": "112",
+          "name": "Dump with time range",
+          "desc": "start the dump task",
+          "inParams": [
+            {
+              "name": "dump_type",
+              "desc": "the type of the dump ",
+              "type": "char",
+              "values": [
+                {
+                  "id": "0",
+                  "name": "EPS"
+                },
+                {
+                  "id": "1",
+                  "name": "TX"
+                },
+                {
+                  "id": "2",
+                  "name": "ANT"
+                },
+                {
+                  "id": "3",
+                  "name": "Solar Panel"
+                },
+                {
+                  "id": "4",
+                  "name": "WOD"
+                },
+                {
+                  "id": "6",
+                  "name": "RX"
+                },
+                {
+                  "id": "13",
+                  "name": "LOG"
+                }
+              ]
+            },
+            {
+              "name": "start time",
+              "desc": "start time of dump ",
+              "type": "datetime"
+            },
+            {
+              "name": "end time",
+              "desc": "end time of dump - not including this date ",
+              "type": "datetime"
+            },
+            {
+              "name": "resulotion",
+              "desc": "dump steps in seconds ",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "105",
+          "name": "Dump by days",
+          "desc": "start the dump task",
+          "inParams": [
+            {
+              "name": "dump_type",
+              "desc": "the type of the dump ",
+              "type": "char",
+              "values": [
+                {
+                  "id": "0",
+                  "name": "EPS"
+                },
+                {
+                  "id": "1",
+                  "name": "TX"
+                },
+                {
+                  "id": "2",
+                  "name": "ANT"
+                },
+                {
+                  "id": "3",
+                  "name": "Solar Panel"
+                },
+                {
+                  "id": "4",
+                  "name": "WOD"
+                },
+                {
+                  "id": "6",
+                  "name": "RX"
+                },
+                {
+                  "id": "13",
+                  "name": "LOG"
+                }
+              ]
+            },
+            {
+              "name": "start time",
+              "desc": "start date of dump ",
+              "type": "date"
+            },
+            {
+              "name": "end time",
+              "desc": "end date of dump - not including this date",
+              "type": "date"
+            },
+            {
+              "name": "resulotion",
+              "desc": "dump steps in seconds ",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "34",
+          "name": "Abort dump",
+          "desc": "stop the dump",
+          "inParams": []
+        },
+        {
+          "id": "19",
+          "name": "Get baud rate",
+          "desc": "get the bitrate of the trxvu",
+          "inParams": []
+        },
+        {
+          "id": "102",
+          "name": "Get TX uptime",
+          "desc": "get how much time the satellite is on",
+          "inParams": []
+        },
+        {
+          "id": "104",
+          "name": "Get RX uptime",
+          "desc": "get how much time the satellite is on?",
+          "inParams": []
+        },
+        {
+          "id": "167",
+          "name": "Get num of online commands",
+          "desc": "get how much commands do the satellite needs to do now",
+          "inParams": []
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "name": "EPS",
+      "desc": "All EPS function calls",
+      "subtypes": [
+        {
+          "id": "1",
+          "name": "Update Alpha",
+          "desc": "update the Alpha value for smothing",
+          "inParams": [
+            {
+              "name": "Alpha",
+              "desc": "new Alpha value (float value)",
+              "type": "float"
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "name": "Get heater values",
+          "desc": "get min & max heater values",
+          "inParams": []
+        },
+        {
+          "id": "3",
+          "name": "Set heater values",
+          "desc": "set min & max heater values",
+          "inParams": [
+            {
+              "name": "Min",
+              "desc": "[0.01 degC] Battery heater low temperature threshold",
+              "type": "short"
+            },
+            {
+              "name": "Max",
+              "desc": "[0.01 degC] Battery heater max temperature threshold",
+              "type": "short"
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "name": "Rest EPS WDT",
+          "desc": "Resets the watchdog timer keeping the system from performing a reset",
+          "inParams": []
+        },
+		
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Telemetry",
+      "subtypes": [
+        {
+          "id": "170",
+          "name": "Delete TLM Files",
+          "desc": "Delete TLM Files",
+          "inParams": [
+            {
+              "name": "tlm_type",
+              "desc": "the type of the telematry to delete ",
+              "type": "char",
+              "values": [
+                {
+                  "id": "0",
+                  "name": "EPS"
+                },
+                {
+                  "id": "1",
+                  "name": "TX"
+                },
+                {
+                  "id": "2",
+                  "name": "ANT"
+                },
+                {
+                  "id": "4",
+                  "name": "WOD"
+                },
+                {
+                  "id": "6",
+                  "name": "RX"
+                },
+                {
+                  "id": "13",
+                  "name": "LOG"
+                }
+              ]
+            },
+            {
+              "name": "start time",
+              "desc": "start date of dump ",
+              "type": "date"
+            },
+            {
+              "name": "end time",
+              "desc": "end date of dump - not including this date",
+              "type": "date"
+            }
+          ]
+        },
+        {
+          "id": "171",
+          "name": "Delete all files on SD, excluding about.jpg",
+          "desc": "Delete all files on SD",
+          "inParams": []
+        },
+        {
+          "id": "204",
+          "name": "Set TLM period time",
+          "desc": "Set TLM interval period time",
+          "inParams": [
+            {
+              "name": "tlm_type",
+              "desc": "the type of the telematry to update ",
+              "type": "char",
+              "values": [
+                {
+                  "id": "0",
+                  "name": "EPS"
+                },
+                {
+                  "id": "1",
+                  "name": "TX"
+                },
+                {
+                  "id": "2",
+                  "name": "ANT"
+                },
+                {
+                  "id": "3",
+                  "name": "Solar Panel"
+                },
+                {
+                  "id": "4",
+                  "name": "WOD"
+                }
+              ]
+            },
+
+			{
+              "name": "TLM interval",
+              "desc": "number of seconds between every TLM save",
+              "type": "int"
+            }            
+          ]
+        },
+		
+
+        {
+          "id": "205",
+          "name": "Get TLM period times",
+          "desc": "Get all TLM period times",
+          "inParams": []
+        },
+
+
+        {
+          "id": "187",
+          "name": "Get Last FS Error",
+          "desc": "Get last file system error",
+          "inParams": [
+            
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Management",
+      "subtypes": [
+        {
+          "id": "222",
+          "name": "Restert",
+          "desc": "restart the OBC",
+          "inParams": [
+            {
+              "name": "reset type",
+              "desc": "what type to reset do we want to preform",
+              "type": "char",
+              "values": [
+                {
+                  "id": "0",
+                  "name": "reset software"
+                },
+                
+                {
+                  "id": "2",
+                  "name": "reset MCU using EPS"
+                },
+                {
+                  "id": "3",
+                  "name": "reset_trxvu_hard"
+                },
+                {
+                  "id": "4",
+                  "name": "reset_trxvu_soft"
+                },
+                {
+                  "id": "5",
+                  "name": "reset_ant_SideA"
+                },
+                {
+                  "id": "6",
+                  "name": "reset_ant_SideB"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "224",
+          "name": "FRAM Write",
+          "desc": "Write value to FRAM and transmit it back",
+          "inParams": [
+            {
+              "name": "Byte data",
+              "desc": "addr(int)+data",
+              "type": "bytes"
+            }
+          ]
+        },
+        {
+          "id": "225",
+          "name": "FRAM Read",
+          "desc": "Read FRAM value and transmit it",
+          "inParams": [
+            {
+              "name": "Byte data",
+              "desc": "addr(int)+size of data to read(int)",
+              "type": "bytes"
+            }
+          ]
+        },
+        {
+          "id": "227",
+          "name": "Get Sat Uptime",
+          "desc": "Get Sat Uptime",
+          "inParams": [
+          ]
+        },
+        {
+          "id": "226",
+          "name": "FRAM Resart",
+          "desc": "restart the FRAM",
+          "inParams": [
+            
+          ]
+        },
+        {
+          "id": "221",
+          "name": "Update sat time",
+          "desc": "update the time in the satellite",
+          "inParams": [
+            {
+              "name": "time",
+              "desc": "what time we want to set",
+              "type": "datetime"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
