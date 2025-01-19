@@ -30,6 +30,30 @@
 #endif
 
 #include "HashSecuredCMD.h"
+
+int SetRSSITransponder(short rssiValue);
+{
+	// put set rssi + rssi in fram together?
+}
+Boolean CheckTransmitionAllowed();
+{
+	Boolean  low_voltage_flag = TRUE;
+	low_voltage_flag = EpsGetLowVoltageFlag();
+	if(low_voltage_flag){return FALSE;}
+	//add if tx mute flag is up to return FALSE
+	return TRUE;
+}
+// make dump better (-res?)
+
+
+
+
+
+
+
+
+
+///------------------------------------------///
 void Hash256(char* text, BYTE* outputHash)
 {
     BYTE buf[SHA256_BLOCK_SIZE];

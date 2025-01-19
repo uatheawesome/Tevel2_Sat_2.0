@@ -11,7 +11,7 @@
 #include "SubSystemModules/Communication/HashSecuredCMD.h"
 #include "SubSystemModules/Communication/TRXVU.h"
 
-
+/**
 extern xTaskHandle xDumpHandle;			                //task handle for dump task
 extern xSemaphoreHandle xDumpLock;                      // this global lock is defined once in TRXVU.c
 
@@ -510,4 +510,3 @@ Boolean CMD_Hash256(sat_packet_t *cmd)
 }
 
 */
-

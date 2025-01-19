@@ -195,7 +195,7 @@ int GetOnlineCommand(sat_packet_t *cmd);
 int TransmitDataAsSPL_Packet(sat_packet_t *cmd, unsigned char *data, unsigned short length);
 
 /*
- * @brief update TX config to its neede values
+ * @brief update TX config to its needed values
  * return error
  */
 int ChangeTrxvuConfigValues();
