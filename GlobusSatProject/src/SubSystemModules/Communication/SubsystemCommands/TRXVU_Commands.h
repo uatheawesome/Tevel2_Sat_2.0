@@ -40,7 +40,7 @@ int CMD_SetBaudRate(sat_packet_t *cmd);
 
 int CMD_GetBeaconInterval(sat_packet_t *cmd);
 
-int CMD_TrasmitBeacon(sat_packet_t *cmd);
+int CMD_TransmitBeacon(sat_packet_t *cmd);
 
 
 int CMD_GetTxUptime(sat_packet_t *cmd);

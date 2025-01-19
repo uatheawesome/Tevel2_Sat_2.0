@@ -160,8 +160,6 @@ int muteTRXVU(time_unix duration);
  */
 void UnMuteTRXVU();
 
-
-
 /*!
  * @brief checks if the Trxvu mute time has terminated
  * @return	TRUE if the termination time has arrived
@@ -183,7 +181,6 @@ int GetNumberOfFramesInBuffer();
  * @return	errors according to CMD_ERR
  */
 int GetOnlineCommand(sat_packet_t *cmd);
-
 
 /*!
  * @brief transmits data as SPL packet
