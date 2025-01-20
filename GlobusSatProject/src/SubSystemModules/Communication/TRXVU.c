@@ -89,6 +89,7 @@ int CMD_SetBeaconInterval(sat_packet_t *cmd);
 int TRX_Logic();
 
 /**
+ * add float chart
  * COMBINE???
  * turn on the transponder
  */
@@ -143,7 +144,7 @@ int SetIdleState(isis_vu_e__onoff_t state, time_unix duration);
  * 			FALSE else
  */
 Boolean CheckForMuteEnd();
-
+//checks mute, transponder, idle 
 /*!
  * @brief returns number of online frames are in the TRX frame buffer
  * @return	#number number of packets available
