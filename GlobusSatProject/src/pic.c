@@ -17,3 +17,22 @@
 //but here i have to write a func that checks if it receved everything and send back what it finds this will have to be saved in the fram as an array
 //a new cmd will have to be added GetMissingFrames() which sends back this array from the fram
 //before it starts to get the pic frames makes new file name [currtime].JPG
+
+//idea the last number in the array is the chunk id
+//diff idea there is a cmd that opens a file and says how many chunks its sending this would get rid of pic id
+
+int DownloadImageFromSat()
+{
+
+}
+int UploadImageToSat(sat_packet_t *cmd)
+{
+//how can i check if this info is in the correct place (maybe its not a pic)?
+//open new file call it [currtime].JPG 
+//or maybe add pic id because how will the sat know if the file for this image is open already?
+//add data to file without last int (should be addToFile(length-sizeof(int))) or maybe with
+
+
+}
+
+

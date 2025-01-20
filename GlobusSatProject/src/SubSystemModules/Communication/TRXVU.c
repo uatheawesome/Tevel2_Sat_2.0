@@ -53,15 +53,18 @@ Boolean CheckTransmitionAllowed();
  */
 int muteTRXVU(time_unix duration);
 {
-	
+	//from what i understand a flag is put up in the fram to signal the sat will not answer, why????
 }
 
 /*!
  * @brief Cancels TRXVU mute - transmission is now enabled
  */
 void UnMuteTRXVU();
+//unmute can be added to muteTRXVU or can use the func and give a param (0)
 
 void InitTxModule();
+
+//what the diff  InitTxModule() VS InitTrxvu() and can they be combined?
 
 /*!
  * @brief initializes the TRXVU subsystem
@@ -73,6 +76,9 @@ int InitTrxvu();
 void checkTransponderFinish();
 
 int CMD_SetBeaconInterval(sat_packet_t *cmd);
+{
+	//memcpy data to var add var to fram
+}
 
 /*!
  * @brief The TRXVU logic according to the sub-system flowchart
@@ -83,11 +89,7 @@ int CMD_SetBeaconInterval(sat_packet_t *cmd);
 int TRX_Logic();
 
 /**
- * sets the transponder's RSSI value
- */
-int SetRSSITransponder(short rssiValue);
-
-/**
+ * COMBINE???
  * turn on the transponder
  */
 int turnOnTransponder();
@@ -99,6 +101,7 @@ int turnOffTransponder();
 Boolean CheckDumpAbort();
 
 /*!
+learn
  * @brief 	Transmits a packet according to the SPL protocol
  * @param[in] packet packet to be transmitted
  * @param[out] avalFrames Number of the available slots in the transmission buffer of the VU_TC after the frame has been added. Set NULL to skip available slot count read-back.
