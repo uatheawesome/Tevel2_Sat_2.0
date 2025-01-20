@@ -18,81 +18,13 @@ typedef struct __attribute__ ((__packed__)) delayed_cmd_t
 
 int ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 {
-	if(NULL == data || NULL == cmd){
-		return null_pointer_error;
-	}
-	void *err = NULL;
-
-	unsigned int offset = 0;
-
-	unsigned int id = 0;
-	err = memcpy(&id,data,sizeof(id));
-	if (NULL == err) {
-		return execution_error;
-	}
-	offset += sizeof(id);
-
-
-	if (id>>24 != YCUBE_SAT_ID && id>>24 != ALL_SAT_ID){
-		return invalid_sat_id;
-	}
-
-
-	char type;
-	err = memcpy(&type,data+offset,sizeof(type));
-	if (NULL == err) {
-		return execution_error;
-	}
-	offset += sizeof(type);
-
-	char subtype;
-	err = memcpy(&subtype, data + offset,sizeof(subtype));
-	if (NULL == err) {
-		return execution_error;
-	}
-	offset += sizeof(subtype);
-
-	unsigned short data_length = 0;
-	err = memcpy(&data_length, data + offset,sizeof(data_length));
-		if (NULL == err) {
-			return execution_error;
-		}
-	offset += sizeof(data_length);
-
-	return AssembleCommand(data+offset,data_length,type,subtype,id,cmd);
 
 }
 
 int AssembleCommand(unsigned char *data, unsigned short data_length, char type,
 		char subtype, unsigned int id, sat_packet_t *cmd)
 {
-	if (NULL == cmd) {
-		return null_pointer_error;
-	}
-	cmd->ID = id;
-	cmd->cmd_type = type;
-	cmd->cmd_subtype = subtype;
-	cmd->length = 0;
 
-	if (NULL != data) {
-
-		unsigned short size = 0;
-		if (data_length > MAX_COMMAND_DATA_LENGTH){
-			logError(SPL_DATA_TOO_BIG , "AssembleCommand");
-			return execution_error;
-		}else{
-			size = data_length;
-		}
-
-
-		cmd->length = size;
-		void *err = memcpy(cmd->data, data, size);
-
-		if (NULL == err) {
-			return execution_error;
-		}
-	}
-	return command_succsess;
 }
 
 // checks if a cmd time is valid for execution -> execution time has passed and command not expired

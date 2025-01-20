@@ -31,7 +31,7 @@
 
 #include "HashSecuredCMD.h"
 
-int SetRSSITransponder(short rssiValue);
+int SetRSSITransponder(short rssiValue)
 {
 	// put set rssi + rssi in fram together?
 }
