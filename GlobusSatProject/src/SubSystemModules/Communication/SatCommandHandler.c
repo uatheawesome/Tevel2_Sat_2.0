@@ -18,7 +18,22 @@ typedef struct __attribute__ ((__packed__)) delayed_cmd_t
 
 int ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 {
-
+	if(NULL == data || NULL == cmd){return null_pointer_error;}
+	//copy the id of the data packet
+	unsigned int id;
+	char type, subtype;
+	unsigned short length;
+	
+	memcpy(&id,data,sizeof(id));
+	
+	//if not our sat dont parse data
+	if (id>>24 != YCUBE_SAT_ID && id>>24 != ALL_SAT_ID){
+	return invalid_sat_id;}
+	
+	
+	
+	
+	
 }
 
 int AssembleCommand(unsigned char *data, unsigned short data_length, char type,
