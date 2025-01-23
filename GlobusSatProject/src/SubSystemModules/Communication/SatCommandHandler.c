@@ -18,28 +18,58 @@ typedef struct __attribute__ ((__packed__)) delayed_cmd_t
 
 int ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 {
-	if(NULL == data || NULL == cmd){return null_pointer_error;}
+	//ask if i should add *void err
+	if(data == NULL|| cmd == NULL){return null_pointer_error;}
 	//copy the id of the data packet
 	unsigned int id;
 	char type, subtype;
 	unsigned short length;
+	int offset;
 	
+	//fill in the correct fields
 	memcpy(&id,data,sizeof(id));
-	
+	offset += sizeof(id);
+	memcpy(&type,data+offset,sizeof(type));
+	offset += sizeof(type);
+	memcpy(&subtype,data+offset,sizeof(subtype));
+	offset += sizeof(subtype);
+	memcpy(&length,data+offset,sizeof(length));
+	offset += sizeof(length);
 	//if not our sat dont parse data
-	if (id>>24 != YCUBE_SAT_ID && id>>24 != ALL_SAT_ID){
-	return invalid_sat_id;}
+	if (id>>24 != YCUBE_SAT_ID && id>>24 != ALL_SAT_ID)
+	{return invalid_sat_id;}
 	
-	
-	
-	
-	
+	return AssembleCommand(data+offset,length,type,subtype,id,cmd);
 }
 
-int AssembleCommand(unsigned char *data, unsigned short data_length, char type,
+int AssembleCommand(unsigned char *data, unsigned short length, char type,
 		char subtype, unsigned int id, sat_packet_t *cmd)
 {
-
+	//PLS PLS PLS change err name to success 
+	//if spl is changed change here
+	//am i supposed to remove id type sub and length from data?
+	if(cmd == NULL){return null_pointer_error;}
+	cmd->ID = id;
+	cmd->type = type;
+	cmd->subtype = subtype;
+	if(data == NULL)
+	{
+	cmd->length = 0; 
+	return command_succsess;
+	}
+	if(length > MAX_COMMAND_DATA_LENGTH)
+	{
+	logError(SPL_DATA_TOO_BIG , "AssembleCommand");
+	return execution_error;
+	}
+	else
+	{
+	 cmd->length = length;
+	 //add void* err?
+	 memcpy(cmd->data, data, length); 
+	}
+	return command_succsess;
+	
 }
 
 // checks if a cmd time is valid for execution -> execution time has passed and command not expired
