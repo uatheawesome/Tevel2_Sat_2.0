@@ -108,7 +108,40 @@ learn
  * @param[out] avalFrames Number of the available slots in the transmission buffer of the VU_TC after the frame has been added. Set NULL to skip available slot count read-back.
  * @return    Error code according to <hal/errors.h>
  */
-int TransmitSplPacket(sat_packet_t *packet, int *avalFrames);
+int TransmitSplPacket(sat_packet_t *packet, int *avalFrames)
+{
+	//check if transmition is allowed
+	if (!CheckTransmitionAllowed()) {
+		return E_CANT_TRANSMIT;
+	}
+
+	if ( packet == NULL) {
+		return E_NOT_INITIALIZED;
+	}
+	if (xSemaphoreTake(xIsTransmitting,SECONDS_TO_TICKS(WAIT_TIME_SEM_TX)) != pdTRUE) {
+		return E_GET_SEMAPHORE_FAILED;
+	}
+	
+	int err = 0;
+	uint8_t AvailableFrames = 0;
+	//get data length for sending frame func
+	unsigned short data_length = packet->length + sizeof(packet->length)
+			+ sizeof(packet->cmd_subtype) + sizeof(packet->cmd_type)
+			+ sizeof(packet->ID);
+	// isis send frame func
+	err = isis_vu_e__send_frame(ISIS_TRXVU_I2C_BUS_INDEX,(unsigned char*) packet, data_length, &AvailableFrames);
+	//delay to make sure all is working the give semaphore as fast as possible
+	vTaskDelay(10);
+	xSemaphoreGive(xIsTransmitting);
+	//should be before? or should be longer?needed? loop?
+	if (AvailableFrames < MIN_TRXVU_BUFF){
+		vTaskDelay(100);
+	}
+	if (err != E_NO_SS_ERR){
+		logError(err ,"TRXVU-TransmitSplPacket");
+	}
+	return err;
+}
 
 /*!
  * @brief sends an abort message via a freeRTOS queue.

@@ -28,7 +28,11 @@ typedef enum __attribute__ ((__packed__)) CMD_ERR{
 
 typedef struct __attribute__ ((__packed__)) sat_packet_t
 {
-
+	unsigned int ID;
+	char cmd_type;
+	char cmd_subtype;
+	unsigned short Length;
+	unsigned char data[MAX_COMMAND_DATA_LENGTH];
 
 }sat_packet_t;
 
