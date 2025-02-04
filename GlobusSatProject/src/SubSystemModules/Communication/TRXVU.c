@@ -31,6 +31,39 @@
 
 #include "HashSecuredCMD.h"
 
+
+xQueueHandle xDumpQueue = NULL;
+xSemaphoreHandle xDumpLock = NULL;
+xSemaphoreHandle xIsTransmitting = NULL; // mutex on transmission.
+xTaskHandle xDumpHandle = NULL;
+
+//mute trxvu
+void setMuteEndTime(time_unix endTime){
+	logError(FRAM_write((unsigned char*) &endTime , MUTE_END_TIME_ADDR , MUTE_END_TIME_SIZE) ,"TRXVU-setMuteEndTime");
+}
+// get mute end time from FRAM
+time_unix getMuteEndTime(){
+	time_unix endTime;
+	logError(FRAM_read((unsigned char*) &endTime , MUTE_END_TIME_ADDR , MUTE_END_TIME_SIZE) ,"TRXVU-getMuteEndTime");
+	return endTime;
+}
+int muteTRXVU(time_unix duration);
+{
+	//from what i understand a flag is put up in the fram to signal the sat will not answer, why????
+	if (duration > MAX_MUTE_TIME) {
+		logError(TRXVU_MUTE_TOO_LONG ,"muteTRXVU");
+		return TRXVU_MUTE_TOO_LONG;
+	// get current unix time
+	time_unix curr_tick_time = 0;
+	Time_getUnixEpoch(&curr_tick_time);
+
+	// set mute end time
+	setMuteEndTime(curr_tick_time + duration);
+	return 0;
+}
+
+void UnMuteTRXVU(){setMuteEndTime(0);}
+
 int SetRSSITransponder(short rssiValue)
 {
 	// put set rssi + rssi in fram together?
@@ -38,29 +71,24 @@ int SetRSSITransponder(short rssiValue)
 Boolean CheckTransmitionAllowed();
 {
 	Boolean  low_voltage_flag = TRUE;
+	
+	time_unix curr_tick_time = 0;
 	low_voltage_flag = EpsGetLowVoltageFlag();
 	if(low_voltage_flag){return FALSE;}
 	//add if tx mute flag is up to return FALSE
-	return TRUE;
-}
-// make dump better (-res?)
-
-/*!
- * @brief	mutes the TRXVU for a specified time frame
- * @param[in] duration for how long will the satellite be in mute state
- * @return	0 in successful
- * 			-1 in failure
- */
-int muteTRXVU(time_unix duration);
-{
-	//from what i understand a flag is put up in the fram to signal the sat will not answer, why????
+	
+	Time_getUnixEpoch(&curr_tick_time);
+	
+	if (curr_tick_time < getMuteEndTime()) return FALSE;
+	
+	// check that we can take the tx Semaphore then return it
+	if(xSemaphoreTake(xIsTransmitting,WAIT_TIME_SEM_TX == pdTRUE)){
+		xSemaphoreGive(xIsTransmitting);
+		return TRUE;
+	}
+	return FALSE;
 }
 
-/*!
- * @brief Cancels TRXVU mute - transmission is now enabled
- */
-void UnMuteTRXVU();
-//unmute can be added to muteTRXVU or can use the func and give a param (0)
 
 void InitTxModule();
 
@@ -71,7 +99,25 @@ void InitTxModule();
  * @return	0 on successful init
  * 			errors according to <hal/errors.h>
  */
-int InitTrxvu();
+int InitTrxvu()//started must finish
+{
+	//an array is moogdar bc it is needed bc there can be more than one trxvu so the obc needs to know which to talk to
+	ISIS_VU_E_t OurTRXVU[1];
+	
+	//I2C addresses defined
+	OurTRXVU[0].rxAddr = I2C_TRXVU_RC_ADDR;
+	OurTRXVU[0].txAddr = I2C_TRXVU_TC_ADDR;
+	
+	//init trxvu
+	if (logError(ISIS_VU_E_Init(OurTRXVU, 1) ,"InitTrxvu-IsisTrxvu_initialize") ) return -1;
+	
+	if(ChangeTrxvuConfigValues()){return -1;}
+	
+	vTaskDelay(1000); // wait a little for config to take place 
+	
+	
+    
+}
 
 void checkTransponderFinish();
 
@@ -309,4 +355,14 @@ int CMD_Hash256(sat_packet_t *cmd)
 	{
 		return E_UNAUTHORIZED;
 	}
+}
+int ChangeTrxvuConfigValues()
+{
+	if (logError(isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__9600bps) ,"isis_vu_e__set_bitrate") ) return -1;
+		if (logError(isis_vu_e__set_tx_freq(0, TX_FREQUENCY),"isis_vu_e__tx_freq") ) return -1;
+		if (logError(isis_vu_e__set_tx_pll_powerout(0, 0xCFEF),"isis_vu_e__set_tx_pll_powerout") ) return -1;
+		if (logError(isis_vu_e__set_rx_freq(0, RX_FREQUENCY), "isis_vu_e__rx_freq") ) return -1;
+		if (logError(isis_vu_e__set_transponder_in_freq(0, RX_FREQUENCY), "isis_vu_e__set_transponder_in_freq") ) return -1;
+
+	return E_NO_SS_ERR;
 }
