@@ -50,8 +50,8 @@ int AssembleCommand(unsigned char *data, unsigned short length, char type,
 	//am i supposed to remove id type sub and length from data?
 	if(cmd == NULL){return null_pointer_error;}
 	cmd->ID = id;
-	cmd->type = type;
-	cmd->subtype = subtype;
+	cmd->cmd_type = type;
+	cmd->cmd_subtype = subtype;
 	if(data == NULL)
 	{
 	cmd->length = 0; 

@@ -50,9 +50,11 @@ time_unix getMuteEndTime(){
 int muteTRXVU(time_unix duration);
 {
 	//from what i understand a flag is put up in the fram to signal the sat will not answer, why????
-	if (duration > MAX_MUTE_TIME) {
+	if (duration > MAX_MUTE_TIME)
+	{
 		logError(TRXVU_MUTE_TOO_LONG ,"muteTRXVU");
 		return TRXVU_MUTE_TOO_LONG;
+	}
 	// get current unix time
 	time_unix curr_tick_time = 0;
 	Time_getUnixEpoch(&curr_tick_time);
@@ -84,8 +86,7 @@ Boolean CheckTransmitionAllowed();
 	// check that we can take the tx Semaphore then return it
 	if(xSemaphoreTake(xIsTransmitting,WAIT_TIME_SEM_TX == pdTRUE)){
 		xSemaphoreGive(xIsTransmitting);
-		return TRUE;
-	}
+		return TRUE;}
 	return FALSE;
 }
 

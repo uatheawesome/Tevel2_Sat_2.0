@@ -1,6 +1,16 @@
 #ifndef PIC_H_
 #define PIC_H_
 
+
+#include <hal/Timing/Time.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "GlobalStandards.h"
+#include "SatCommandHandler.h"
+#include "SPL.h"
+#include "utils.h"
+//fix includes if i want to use this file
 #define MaxChunkSize NULL 
 #define MAX_AMOUNT_OF_CHUNKS_FOR_IMAGE NULL 
 // spl packet
@@ -22,3 +32,4 @@ int UploadImageToSat();
 
 int DownloadImageFromSat();
 
+#endif /* pic_h */
