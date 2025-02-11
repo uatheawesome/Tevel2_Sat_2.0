@@ -55,12 +55,12 @@ int AssembleCommand(unsigned char *data, unsigned short length, char type,
 	if(data == NULL)
 	{
 	cmd->length = 0; 
-	return command_succsess;
+		return command_succsess;
 	}
 	if(length > MAX_COMMAND_DATA_LENGTH)
 	{
 	logError(SPL_DATA_TOO_BIG , "AssembleCommand");
-	return execution_error;
+		return execution_error;
 	}
 	else
 	{

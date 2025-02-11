@@ -20,7 +20,22 @@
 
 //idea the last number in the array is the chunk id
 //diff idea there is a cmd that opens a file and says how many chunks its sending this would get rid of pic id
+int OpenFileUsingEpochTime() //returns file name (the epoch time)
+{
+FILE * f_source;
+char filename[20];
 
+// save current time
+time_unix current_time = 0;
+Time_getUnixEpoch(&current_time);
+
+sprintf(filename, "%ld.jpg", current_time);  // format as "epoch_time.jpg"
+
+f_source = f_open(filename, "a");
+
+if (f_source) { f_close(f_source); return current_time;}
+else{f_close(f_source); return 0;}
+}
 int DownloadImageFromSat()
 {
 
@@ -31,8 +46,23 @@ int UploadImageToSat(sat_packet_t *cmd)
 //open new file call it [currtime].JPG 
 //or maybe add pic id because how will the sat know if the file for this image is open already?
 //add data to file without last int (should be addToFile(length-sizeof(int))) or maybe with
-
+imageInfo_t data;
+unsigned char cmd_data[MAX_COMMAND_DATA_LENGTH];
+time_unix filename = OpenFileUsingEpochTime();
+unsigned int received_chunks[MAX_AMOUNT_OF_CHUNKS_FOR_IMAGE];//add clean received_chunks right before first memcpy
+if (!cmd || MAX_COMMAND_DATA_LENGTH < 2 || (cmd && cmd->length == 0))
+{return E_NOT_INITIALIZED;}
+if(filename == 0)
+{
+    //return error - file initilized; 
+}
+memcpy(&cmd_data, cmd->data, cmd->length - sizeof(data.numberChunks));//cpys data except for end which is the chunk number
+unsigned char last_bytes[2];
+    last_bytes[0] = cmd_data[MAX_COMMAND_DATA_LENGTH - 2];  // Second to last byte
+    last_bytes[1] = cmd_data[MAX_COMMAND_DATA_LENGTH - 1];  // Last byte
+memcpy(&data->numberChunks,last_bytes,sizeof(data.numberChunks));//cpys last two bytes (short) to numberchunks
 
 }
+
 
 
