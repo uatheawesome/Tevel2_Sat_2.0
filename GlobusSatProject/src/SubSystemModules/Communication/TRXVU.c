@@ -93,7 +93,7 @@ Boolean CheckTransmitionAllowed();
 
 void InitTxModule();
 
-//what the diff  InitTxModule() VS InitTrxvu() and can they be combined?
+//what the diff  InitTxModule() VS InitTrxvu() and can and will be combined 
 
 /*!
  * @brief initializes the TRXVU subsystem
@@ -102,13 +102,21 @@ void InitTxModule();
  */
 int InitTrxvu()//started must finish
 {
-	//an array is moogdar bc it is needed bc there can be more than one trxvu so the obc needs to know which to talk to
+	//init tx module 
+	if(xIsTransmitting == NULL)
+		vSemaphoreCreateBinary(xIsTransmitting);
+		
+	//an array is defined bc it is needed bc there can be more than one trxvu so the obc needs to know which to talk to
 	ISIS_VU_E_t OurTRXVU[1];
 	
 	//I2C addresses defined
 	OurTRXVU[0].rxAddr = I2C_TRXVU_RC_ADDR;
 	OurTRXVU[0].txAddr = I2C_TRXVU_TC_ADDR;
 	
+	//Buffer definition
+   	myTRXVU[0].maxSendBufferLength = MAX_COMMAND_DATA_LENGTH;
+	myTRXVU[0].maxReceiveBufferLength = MAX_COMMAND_DATA_LENGTH;
+    
 	//init trxvu
 	if (logError(ISIS_VU_E_Init(OurTRXVU, 1) ,"InitTrxvu-IsisTrxvu_initialize") ) return -1;
 	
@@ -116,45 +124,8 @@ int InitTrxvu()//started must finish
 	
 	vTaskDelay(1000); // wait a little for config to take place 
 	
-	
-    
 }
 
-void checkTransponderFinish();
-
-int CMD_SetBeaconInterval(sat_packet_t *cmd);
-{
-	//memcpy data to var add var to fram
-}
-
-/*!
- * @brief The TRXVU logic according to the sub-system flowchart
- * @return	command_succsess on success
- * 			errors according to CMD_ERR enumeration
- * @see "SatCommandHandler.h"
- */
-int TRX_Logic();
-
-/**
- * add float chart
- * COMBINE???
- * turn on the transponder
- */
-int turnOnTransponder();
-/**
- * turn off the transponder
- */
-int turnOffTransponder();
-
-Boolean CheckDumpAbort();
-
-/*!
-learn
- * @brief 	Transmits a packet according to the SPL protocol
- * @param[in] packet packet to be transmitted
- * @param[out] avalFrames Number of the available slots in the transmission buffer of the VU_TC after the frame has been added. Set NULL to skip available slot count read-back.
- * @return    Error code according to <hal/errors.h>
- */
 int TransmitSplPacket(sat_packet_t *packet, int *avalFrames)
 {
 	//check if transmition is allowed
@@ -189,6 +160,34 @@ int TransmitSplPacket(sat_packet_t *packet, int *avalFrames)
 	}
 	return err;
 }
+void checkTransponderFinish();
+
+int CMD_SetBeaconInterval(sat_packet_t *cmd);
+{
+	//memcpy data to var add var to fram
+}
+
+/*!
+ * @brief The TRXVU logic according to the sub-system flowchart
+ * @return	command_succsess on success
+ * 			errors according to CMD_ERR enumeration
+ * @see "SatCommandHandler.h"
+ */
+int TRX_Logic();
+
+/**
+ * add float chart
+ * COMBINE???
+ * turn on the transponder
+ */
+int turnOnTransponder();
+/**
+ * turn off the transponder
+ */
+int turnOffTransponder();
+
+Boolean CheckDumpAbort();
+
 
 /*!
  * @brief sends an abort message via a freeRTOS queue.
@@ -255,10 +254,6 @@ int TransmitDataAsSPL_Packet(sat_packet_t *cmd, unsigned char *data, unsigned sh
  * return error
  */
 int ChangeTrxvuConfigValues();
-
-
-
-
 
 
 
