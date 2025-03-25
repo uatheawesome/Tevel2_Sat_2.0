@@ -32,6 +32,7 @@ Boolean selectAndExecuteTest()
 #define CMD_TEST_INDEX		4
 #define MNGMNT_TEST_INDEX	5
 #define FS_TEST_INDEX 		6
+#define CMD_Tests           7
 
 
 	unsigned int number_of_tests = 7;
@@ -44,6 +45,7 @@ Boolean selectAndExecuteTest()
 	printf("\t 4) Commands Handeling Testing\n\r");
 	printf("\t 5) Managment Testing\n\r");
 	printf("\t 6) File System Testing\n\r");
+	printf("\t 7) CMD Demo Testing\n\r");
 
 //	restart();
 //	vTaskDelay(10000);
@@ -80,6 +82,10 @@ Boolean selectAndExecuteTest()
 
 	case FS_TEST_INDEX:
 		offerMoreTests = MainFileSystemTestBench();
+		break;
+
+	case CMD_Tests:
+		offerMoreTests = MainCMDTestBench();
 		break;
 
 	default:
