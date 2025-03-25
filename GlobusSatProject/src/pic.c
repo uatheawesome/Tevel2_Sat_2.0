@@ -48,10 +48,7 @@ void Clean_Received_Chunks(unsigned int Received_Chunks[])
         Received_Chunks[i]=0;
     }  
 }
-int DownloadImageFromSat()
-{
 
-}
 imageInfo_t ParseDataForImage(sat_packet_t *cmd,unsigned char cmd_data[])
 {
 imageInfo_t data;
@@ -71,6 +68,7 @@ memcpy(&data.numberChunks, last_bytes + 2, sizeof(data.numberChunks));
 
 return data;
 }
+
 int UploadImageToSat(sat_packet_t *cmd)
 {
 //how can i check if this info is in the correct place (maybe its not a pic)?
@@ -92,8 +90,9 @@ if(filename != 0)
 }
 data = ParseDataForImage(cmd,cmd_data);
 // here what i have to do is add func that writes data to file with image id and number chunk then adds these(id+chunk)to Received_Chunks
-
 }
 
+int DownloadImageFromSat()
+{
 
-
+}
