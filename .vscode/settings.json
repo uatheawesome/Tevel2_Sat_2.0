@@ -3,6 +3,7 @@
     "files.associations": {
         "epstestingdemo.h": "c",
         "cmdtestingdemo.h": "c",
-        "eps.h": "c"
+        "eps.h": "c",
+        "isis_ants_rev2.h": "c"
     }
 }

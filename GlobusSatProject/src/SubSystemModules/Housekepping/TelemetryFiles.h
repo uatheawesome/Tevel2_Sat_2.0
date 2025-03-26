@@ -24,7 +24,7 @@
 
 typedef enum {
 // don't change the position of these
-	tlm_eps = 0,
+	tlm_eps = 0, 
 	tlm_tx,
 	tlm_antenna,
 	tlm_solar,
